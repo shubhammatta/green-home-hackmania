@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:greenhome/main.dart';
 import 'package:greenhome/widget/appBar.dart';
+import 'package:greenhome/widget/graphWidget.dart';
 
 const String startMsg =
     'Start saving on your electricity bill today! \n\nLog your appliances and usage habits on our smart platform, and receive personalized insights to optimize your energy consumption.';
@@ -29,7 +30,7 @@ class _DashboardState extends State<Dashboard> {
     super.dispose();
   }
 
-  Widget gettingStartedMsg() {
+Widget gettingStartedMsg() {
     return Center(
       child: Opacity(
         opacity: 0.85,
@@ -184,7 +185,7 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                             const Center(
-                              child: Text('Graph'), // To Add Graph Widget
+                              child: GraphWidget(userId: 1234), // To Add Graph Widget
                             ),
                           ],
                         ),

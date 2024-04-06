@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -19,3 +20,5 @@ flutter:
   uses-material-design: true
   assets:
     - asset/images/
+
+http: ^0.13.5 # or the latest version
