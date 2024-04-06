@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: ^2.1.2
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -23,6 +24,7 @@ flutter:
   uses-material-design: true
   assets:
     - asset/images/
+    - asset/images/icon/
     - .env
 
 http: ^0.13.5 # or the latest version

@@ -42,7 +42,7 @@ class _ScanApplianceState extends State<ScanAppliance> {
     final file = await File(filePath).writeAsBytes(
         buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
-    var headers = {'category': 'Projector'};
+    var headers = {'category': 'Projector'}; // To change it to actual category
     var request = http.MultipartRequest('POST', Uri.parse(apiEndPoint));
     request.files
         .add(await http.MultipartFile.fromPath('image_path', file.path));

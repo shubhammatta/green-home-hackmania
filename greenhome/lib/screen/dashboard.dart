@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:greenhome/main.dart';
 import 'package:greenhome/screen/scan.dart';
 import 'package:greenhome/screen/selectHome.dart';
+import 'package:greenhome/widget/anomalyGraphWidget.dart';
 import 'package:greenhome/widget/appBar.dart';
 import 'package:greenhome/widget/graphWidget.dart';
 
@@ -110,12 +112,23 @@ class _DashboardState extends State<Dashboard> {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.home,
-              size: width / 2.5,
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: title == 'MyHome'
+                  ? Image(
+                      image: const AssetImage('asset/images/icon/My Home.png'),
+                      width: width / 2.5,
+                    )
+                  : SvgPicture.asset(
+                      'asset/images/icon/$title.svg',
+                      width: width / 2.5,
+                      height: width / 2.5,
+                      placeholderBuilder: (BuildContext context) =>
+                          const Icon(Icons.error),
+                    ),
             ),
             SizedBox(
-              width: width - (width / 2.5),
+              width: width - (width / 2.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +181,7 @@ class _DashboardState extends State<Dashboard> {
       {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
       {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
       {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
-      {'name': 'Washing machine', 'status': false, 'hours': 0.5, 'kwh': 1.5},
+      {'name': 'Washing Machine', 'status': false, 'hours': 0.5, 'kwh': 1.5},
       {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
       {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
     ];
@@ -241,7 +254,7 @@ class _DashboardState extends State<Dashboard> {
                   child: Column(
                     children: [
                       Center(
-                        child: cardTemplate(title: 'My Home', width: 300),
+                        child: cardTemplate(title: 'MyHome', width: 300),
                       ),
                       const SizedBox(
                         height: 50,
@@ -258,6 +271,10 @@ class _DashboardState extends State<Dashboard> {
                             ),
                             const Center(
                               child: GraphWidget(
+                                  userId: 1234), // To Add Graph Widget
+                            ),
+                            const Center(
+                              child: GraphAnomalyWidget(
                                   userId: 1234), // To Add Graph Widget
                             ),
                           ],
