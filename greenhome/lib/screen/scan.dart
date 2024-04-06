@@ -35,17 +35,18 @@ class _ScanApplianceState extends State<ScanAppliance> {
     var image = const AssetImage('asset/images/sony.jpeg');
     print(image.keyName);
 
-    final byteData = await rootBundle.load('asset/images/sony.jpeg');
-    final buffer = byteData.buffer;
-    final directory = await getTemporaryDirectory();
-    final filePath = '${directory.path}/tempImage';
-    final file = await File(filePath).writeAsBytes(
-        buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+    // final byteData = await rootBundle.load('asset/images/sony.jpeg');
+    // final buffer = byteData.buffer;
+    // final directory = await getTemporaryDirectory();
+    // final filePath = '${directory.path}/tempImage';
+    // final file = await File(filePath).writeAsBytes(
+    //     buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
     var headers = {'category': 'Projector'}; // To change it to actual category
     var request = http.MultipartRequest('POST', Uri.parse(apiEndPoint));
+    print("ABCDC" + _imageFile!.path);
     request.files
-        .add(await http.MultipartFile.fromPath('image_path', file.path));
+        .add(await http.MultipartFile.fromPath('image_path', _imageFile!.path));
     request.headers.addAll(headers);
     try {
       setState(() {
@@ -86,7 +87,7 @@ class _ScanApplianceState extends State<ScanAppliance> {
                 width: 200,
                 height: 200,
               ),
-            const Image(image: AssetImage('asset/images/sony.jpeg')),
+            // const Image(image: AssetImage('asset/images/sony.jpeg')),
             ElevatedButton(
               onPressed: _captureImage,
               child: const Text('Capture Image'),
