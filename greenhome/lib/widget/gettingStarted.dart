@@ -3,9 +3,15 @@ import 'package:flutter/material.dart';
 const String startMsg =
     'Start saving on your electricity bill today! \n\nLog your appliances and usage habits on our smart platform, and receive personalized insights to optimize your energy consumption.';
 
-class GettingStartedMsg extends StatelessWidget {
-  const GettingStartedMsg({super.key});
+class GettingStartedMsg extends StatefulWidget {
+  final Function onStarted;
+  const GettingStartedMsg({super.key, required this.onStarted});
 
+  @override
+  State<GettingStartedMsg> createState() => _GettingStartedMsgState();
+}
+
+class _GettingStartedMsgState extends State<GettingStartedMsg> {
   @override
   Widget build(BuildContext context) {
     return Center(
