@@ -15,8 +15,13 @@ const String startMsg =
 class Dashboard extends StatefulWidget {
   final String? homeType;
   final bool isNewUser;
+  final List<Map<String, dynamic>> devices;
   static const double ELECTRICITY_TARIFF = 29.89;
-  const Dashboard({super.key, this.homeType, required this.isNewUser});
+  const Dashboard(
+      {super.key,
+      this.homeType,
+      required this.isNewUser,
+      this.devices = const []});
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -27,6 +32,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
+    print(widget.devices);
     showNewUserMsg = widget.isNewUser;
     debugPrint(widget.homeType.toString());
     widget.homeType != null ? showNewUserMsg = false : '';
@@ -111,6 +117,7 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Padding(
               padding: const EdgeInsets.all(10.0),
@@ -119,13 +126,18 @@ class _DashboardState extends State<Dashboard> {
                       image: const AssetImage('asset/images/icon/My Home.png'),
                       width: width / 2.5,
                     )
-                  : SvgPicture.asset(
-                      'asset/images/icon/$title.svg',
-                      width: width / 2.5,
-                      height: width / 2.5,
-                      placeholderBuilder: (BuildContext context) =>
-                          const Icon(Icons.error),
-                    ),
+                  : title == 'Add Device'
+                      ? //empty box
+                      const SizedBox(
+                          width: 1,
+                        )
+                      : SvgPicture.asset(
+                          'asset/images/icon/$title.svg',
+                          width: width / 2.5,
+                          height: width / 2.5,
+                          placeholderBuilder: (BuildContext context) =>
+                              const Icon(Icons.error),
+                        ),
             ),
             SizedBox(
               width: width - (width / 2.0),
@@ -176,6 +188,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+<<<<<<< HEAD
 Widget deviceCards(screenWidth, screenHeight) {
     List<Map<String, dynamic>> devices = [
       {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
@@ -185,10 +198,23 @@ Widget deviceCards(screenWidth, screenHeight) {
       {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
       {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
     ];
+=======
+  Widget deviceCards(screenWidth, screenHeight) {
+    // List<Map<String, dynamic>> devices = [
+    //   {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
+    //   {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
+    //   {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
+    //   {'name': 'Washing Machine', 'status': false, 'hours': 0.5, 'kwh': 1.5},
+    //   {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
+    //   {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
+    // ];
+    List<Map<String, dynamic>> devices = widget.devices;
+    print(devices);
+>>>>>>> 7d2e568 (Test)
 
     return GridView.builder(
       padding: const EdgeInsets.all(10),
-      itemCount: devices.length,
+      itemCount: devices.length + 1,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: screenWidth / (screenHeight / 4),
         crossAxisCount: 2, // Number of items in a row
@@ -196,7 +222,9 @@ Widget deviceCards(screenWidth, screenHeight) {
         mainAxisSpacing: 10, // Spacing between items vertically
       ),
       itemBuilder: (ctx, index) {
-        if (index == devices.length - 1) {
+        print("Total Number is :${devices.length}");
+        print("Index is :$index");
+        if (index == devices.length) {
           return cardTemplate(
             title: 'Add Device',
             width: screenWidth / 2.5,

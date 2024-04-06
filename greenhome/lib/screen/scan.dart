@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:greenhome/screen/userPattern.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -98,6 +99,13 @@ class _ScanApplianceState extends State<ScanAppliance> {
                     onPressed: _sendImageToApi,
                     child: const Text('Send Image to API'),
                   ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const UserPattern()));
+              },
+              child: const Text('Demo Only'),
+            )
           ],
         ),
       ),

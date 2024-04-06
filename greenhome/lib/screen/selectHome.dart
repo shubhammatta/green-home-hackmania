@@ -9,6 +9,14 @@ class SelectHomeType extends StatefulWidget {
 }
 
 class _SelectHomeTypeState extends State<SelectHomeType> {
+  List<Map<String, dynamic>> devices = [
+    {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
+    {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
+    {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
+    {'name': 'Washing Machine', 'status': false, 'hours': 0.5, 'kwh': 1.5},
+    {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
+    {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
+  ];
   List<String> homeType = [
     'HDB 1-Room',
     'HDB 2-Room',
@@ -48,6 +56,7 @@ class _SelectHomeTypeState extends State<SelectHomeType> {
                   builder: (context) => Dashboard(
                     isNewUser: false,
                     homeType: homeType[index],
+                    devices: devices,
                   ),
                 ),
               );

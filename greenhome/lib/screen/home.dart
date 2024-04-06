@@ -3,6 +3,14 @@ import 'package:flutter/widgets.dart';
 import 'package:greenhome/screen/dashboard.dart';
 
 StatefulWidget home(BuildContext context) {
+  List<Map<String, dynamic>> devices = [
+    {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
+    {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
+    {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
+    {'name': 'Washing Machine', 'status': false, 'hours': 0.5, 'kwh': 1.5},
+    {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
+    {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
+  ];
   return MaterialApp(
     home: Scaffold(
       body: SingleChildScrollView(
@@ -30,7 +38,8 @@ StatefulWidget home(BuildContext context) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const Dashboard(
+                          builder: (context) => Dashboard(
+                            devices: devices,
                             isNewUser: true,
                           ),
                         ),
