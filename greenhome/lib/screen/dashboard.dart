@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:greenhome/main.dart';
+import 'package:greenhome/screen/selectHome.dart';
 import 'package:greenhome/widget/appBar.dart';
 import 'package:greenhome/widget/graphWidget.dart';
 
@@ -9,8 +10,9 @@ const String startMsg =
     'Start saving on your electricity bill today! \n\nLog your appliances and usage habits on our smart platform, and receive personalized insights to optimize your energy consumption.';
 
 class Dashboard extends StatefulWidget {
+  final String? homeType;
   final bool isNewUser;
-  const Dashboard({super.key, required this.isNewUser});
+  const Dashboard({super.key, this.homeType, required this.isNewUser});
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -22,6 +24,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     showNewUserMsg = widget.isNewUser;
+    debugPrint(widget.homeType.toString());
+    widget.homeType != null ? showNewUserMsg = false : '';
     super.initState();
   }
 
@@ -65,6 +69,14 @@ Widget gettingStartedMsg() {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
+                    showNewUserMsg
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SelectHomeType(),
+                            ),
+                          )
+                        : '';
                     showNewUserMsg = false;
                   });
                 },
@@ -77,7 +89,8 @@ Widget gettingStartedMsg() {
     );
   }
 
-  Widget cardTemplate({double width = 200, isNew = false}) {
+  Widget cardTemplate(
+      {required String title, double width = 200, isNew = false}) {
     return Opacity(
       opacity: 0.85,
       child: Container(
@@ -95,14 +108,24 @@ Widget gettingStartedMsg() {
               Icons.home,
               size: width / 2.5,
             ),
-            const Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Title'),
-                Text('Value'),
-                Text('Conversion'),
-              ],
+              children: isNew
+                  ? [
+                      Text(title),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.add_circle,
+                        ),
+                      )
+                    ]
+                  : [
+                      Text(title),
+                      const Text('Value'),
+                      const Text('Conversion'),
+                    ],
             ),
           ],
         ),
@@ -111,22 +134,8 @@ Widget gettingStartedMsg() {
   }
 
   Widget deviceCards(screenWidth, screenHeight) {
-    // return Center(
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //     children: [
-    //       cardTemplate(),
-    //       Row(
-    //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //         children: [
-    //           cardTemplate(width: screenWidth / 2.5),
-    //           cardTemplate(width: screenWidth / 2.5),
-    //         ],
-    //       ),
-    //     ],
-    //   ),
-    // );
-    List<String> deviceList = ['a', 'b', 'c', 'd', 'e']; // Your device list
+    List<String> deviceList = ['a', 'b', 'c', 'd', 'e']; // device list
+    List<bool> deviceStatus = [true, false, true, true, false];
 
     return GridView.builder(
       padding: const EdgeInsets.all(10),
@@ -138,7 +147,18 @@ Widget gettingStartedMsg() {
         mainAxisSpacing: 10, // Spacing between items vertically
       ),
       itemBuilder: (ctx, index) {
-        return cardTemplate(width: screenWidth / 2.5);
+        if (index == deviceList.length - 1) {
+          return cardTemplate(
+            title: 'Add Device',
+            width: screenWidth / 2.5,
+            isNew: true,
+          );
+        }
+        return cardTemplate(
+          title: deviceList[index],
+          width: screenWidth / 2.5,
+          isNew: deviceStatus[index],
+        );
       },
     );
   }
@@ -169,7 +189,7 @@ Widget gettingStartedMsg() {
                   child: Column(
                     children: [
                       Center(
-                        child: cardTemplate(width: 300),
+                        child: cardTemplate(title: 'My Home', width: 300),
                       ),
                       const SizedBox(
                         height: 50,

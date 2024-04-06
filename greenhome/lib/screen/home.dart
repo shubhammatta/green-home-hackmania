@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:greenhome/screen/dashboard.dart';
 
 StatefulWidget home(BuildContext context) {
   return MaterialApp(
@@ -26,8 +27,14 @@ StatefulWidget home(BuildContext context) {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      // Navigate to the registration screen
-                      Navigator.of(context).pushNamed('/dashboard');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Dashboard(
+                            isNewUser: true,
+                          ),
+                        ),
+                      );
                     },
                     child: Container(
                       width: double.infinity,

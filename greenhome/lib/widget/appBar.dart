@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greenhome/screen/home.dart';
 
 class GreenHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -10,6 +11,21 @@ class GreenHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => home(context),
+              ),
+            );
+          }
+        },
+      ),
       title: Text(
         title,
         style: const TextStyle(

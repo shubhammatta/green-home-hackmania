@@ -19,8 +19,8 @@ class _LandingScreenState extends State<LandingScreen> {
       Future.delayed(const Duration(seconds: 3), () {
         // Use pushReplacement to replace the current route with the home route
         // This prevents the user from going back to the splash screen with the back button
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => home(context)));
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => home(context)));
       });
     });
   }

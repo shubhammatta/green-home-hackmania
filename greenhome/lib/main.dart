@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:greenhome/screen/home.dart';
 
 import 'package:greenhome/screen/landing.dart';
 import 'package:greenhome/screen/dashboard.dart';
+import 'package:greenhome/screen/scan.dart';
+import 'package:greenhome/screen/selectHome.dart';
 
 const String appName = 'Green Home';
 
@@ -21,10 +24,13 @@ class MainApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => LandingScreen(context: context),
+        // '/': (context) => LandingScreen(context: context),
+        '/': (context) => const ScanAppliance(),
+        '/home': (context) => home(context),
         '/dashboard': (context) => const Dashboard(
               isNewUser: true,
             ),
+        '/selecthome': (context) => const SelectHomeType(),
       },
     );
   }
