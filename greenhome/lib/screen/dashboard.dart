@@ -24,6 +24,11 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Widget gettingStartedMsg() {
     return Center(
       child: Opacity(
@@ -71,7 +76,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget cardTemplate({double width = 200}) {
+  Widget cardTemplate({double width = 200, isNew = false}) {
     return Opacity(
       opacity: 0.85,
       child: Container(
@@ -168,12 +173,22 @@ class _DashboardState extends State<Dashboard> {
                       const SizedBox(
                         height: 50,
                       ),
-                      SingleChildScrollView(
-                        child: SizedBox(
-                          height: screenHeight / 2,
-                          child: deviceCards(screenWidth, screenHeight),
+                      SizedBox(
+                        height: screenHeight / 2,
+                        child: PageView(
+                          children: <Widget>[
+                            SingleChildScrollView(
+                              child: SizedBox(
+                                height: screenHeight / 2,
+                                child: deviceCards(screenWidth, screenHeight),
+                              ),
+                            ),
+                            const Center(
+                              child: Text('Graph'), // To Add Graph Widget
+                            ),
+                          ],
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
