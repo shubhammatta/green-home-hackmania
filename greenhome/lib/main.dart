@@ -24,8 +24,8 @@ class MainApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        // '/': (context) => LandingScreen(context: context),
-        '/': (context) => const ScanAppliance(),
+        '/': (context) => LandingScreen(context: context),
+        // '/': (context) => const ScanAppliance(),
         '/home': (context) => home(context),
         '/dashboard': (context) => const Dashboard(
               isNewUser: true,

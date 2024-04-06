@@ -9,9 +9,10 @@ environment:
 dependencies:
   image_picker: ^1.0.7
   http: ^1.2.1
+  flutter_dotenv: ^5.1.0
   flutter:
     sdk: flutter
-  http: ^1.2.1
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:
@@ -22,5 +23,6 @@ flutter:
   uses-material-design: true
   assets:
     - asset/images/
+    - .env
 
 http: ^0.13.5 # or the latest version

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:greenhome/main.dart';
+import 'package:greenhome/screen/scan.dart';
 import 'package:greenhome/screen/selectHome.dart';
 import 'package:greenhome/widget/appBar.dart';
 import 'package:greenhome/widget/graphWidget.dart';
@@ -34,7 +35,7 @@ class _DashboardState extends State<Dashboard> {
     super.dispose();
   }
 
-Widget gettingStartedMsg() {
+  Widget gettingStartedMsg() {
     return Center(
       child: Opacity(
         opacity: 0.85,
@@ -108,24 +109,40 @@ Widget gettingStartedMsg() {
               Icons.home,
               size: width / 2.5,
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: isNew
-                  ? [
-                      Text(title),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.add_circle,
+            SizedBox(
+              width: width - (width / 2.5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: isNew
+                    ? [
+                        Text(title),
+                        IconButton(
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ScanAppliance(),
+                              ),
+                            );
+                            print('Result from ScanPage: $result');
+                          },
+                          icon: const Icon(
+                            Icons.add_circle,
+                          ),
+                        )
+                      ]
+                    : [
+                        // if text is large then line break
+                        Text(
+                          title,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
-                      )
-                    ]
-                  : [
-                      Text(title),
-                      const Text('Value'),
-                      const Text('Conversion'),
-                    ],
+                        const Text('Value'),
+                        const Text('Conversion'),
+                      ],
+              ),
             ),
           ],
         ),
@@ -134,8 +151,24 @@ Widget gettingStartedMsg() {
   }
 
   Widget deviceCards(screenWidth, screenHeight) {
-    List<String> deviceList = ['a', 'b', 'c', 'd', 'e']; // device list
-    List<bool> deviceStatus = [true, false, true, true, false];
+    List<Map<String, dynamic>> devices = [
+      {'name': 'Aircon', 'status': true, 'hours': 8},
+      {'name': 'Water Heater', 'status': true, 'hours': 1},
+      {'name': 'Refrigerator', 'status': true, 'hours': 24},
+      {'name': 'Washing machine', 'status': true, 'hours': 0.5},
+      {'name': 'Computer', 'status': true, 'hours': 10},
+      {'name': 'Lighting', 'status': true, 'hours': 6},
+    ];
+    List<String> deviceList = [
+      'Aircon',
+      'Water Heater',
+      'Refrigerator',
+      'Washing machine',
+      'Computer',
+      'Lighting'
+    ]; // device list
+    List<bool> deviceStatus = [true, true, true, true, true];
+    List<num> deviceHrs = [8, 1, 24, 0.5, 10, 6];
 
     return GridView.builder(
       padding: const EdgeInsets.all(10),
@@ -155,9 +188,9 @@ Widget gettingStartedMsg() {
           );
         }
         return cardTemplate(
-          title: deviceList[index],
+          title: devices[index]['name'],
           width: screenWidth / 2.5,
-          isNew: deviceStatus[index],
+          isNew: devices[index]['status'],
         );
       },
     );
@@ -205,7 +238,8 @@ Widget gettingStartedMsg() {
                               ),
                             ),
                             const Center(
-                              child: GraphWidget(userId: 1234), // To Add Graph Widget
+                              child: GraphWidget(
+                                  userId: 1234), // To Add Graph Widget
                             ),
                           ],
                         ),
