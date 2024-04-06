@@ -185,20 +185,10 @@ class _DashboardState extends State<Dashboard> {
       {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
       {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
     ];
-    List<String> deviceList = [
-      'Aircon',
-      'Water Heater',
-      'Refrigerator',
-      'Washing machine',
-      'Computer',
-      'Lighting'
-    ]; // device list
-    List<bool> deviceStatus = [true, true, true, true, true];
-    List<num> deviceHrs = [8, 1, 24, 0.5, 10, 6];
 
     return GridView.builder(
       padding: const EdgeInsets.all(10),
-      itemCount: deviceList.length,
+      itemCount: devices.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: screenWidth / (screenHeight / 4),
         crossAxisCount: 2, // Number of items in a row
@@ -206,7 +196,7 @@ class _DashboardState extends State<Dashboard> {
         mainAxisSpacing: 10, // Spacing between items vertically
       ),
       itemBuilder: (ctx, index) {
-        if (index == deviceList.length - 1) {
+        if (index == devices.length - 1) {
           return cardTemplate(
             title: 'Add Device',
             width: screenWidth / 2.5,

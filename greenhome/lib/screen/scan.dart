@@ -44,7 +44,7 @@ class _ScanApplianceState extends State<ScanAppliance> {
 
     var headers = {'category': 'Projector'}; // To change it to actual category
     var request = http.MultipartRequest('POST', Uri.parse(apiEndPoint));
-    print("ABCDC" + _imageFile!.path);
+    print("ABCDC${_imageFile!.path}");
     request.files
         .add(await http.MultipartFile.fromPath('image_path', _imageFile!.path));
     request.headers.addAll(headers);
