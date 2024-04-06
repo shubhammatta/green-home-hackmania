@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:greenhome/main.dart';
 import 'package:greenhome/screen/scan.dart';
 import 'package:greenhome/screen/selectHome.dart';
+import 'package:greenhome/widget/anomalyGraphWidget.dart';
 import 'package:greenhome/widget/appBar.dart';
 import 'package:greenhome/widget/graphWidget.dart';
 
@@ -240,6 +241,9 @@ class _DashboardState extends State<Dashboard> {
                             const Center(
                               child: GraphWidget(
                                   userId: 1234), // To Add Graph Widget
+                            ),
+                            const Center(
+                              child: GraphAnomalyWidget(userId: 1234), // To Add Graph Widget
                             ),
                           ],
                         ),
