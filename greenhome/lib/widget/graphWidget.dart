@@ -56,11 +56,9 @@ class _GraphWidgetState extends State<GraphWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Actual vs Predicted Daily Spending'),
-      ),
-      body: Center(
+    return Column(
+      children: [Text('Actual vs Predicted Daily Spending'),
+      Center(
         child: _isLoading
             ? CircularProgressIndicator()
             : _graphData != null
@@ -69,7 +67,7 @@ class _GraphWidgetState extends State<GraphWidget> {
                     fit: BoxFit.contain,
                   )
                 : Text('Error loading graph'),
-      ),
+      ),],
     );
   }
 }

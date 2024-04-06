@@ -56,11 +56,9 @@ class _GraphAnomalyWidgetState extends State<GraphAnomalyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Consumption Anomaly Graph'),
-      ),
-      body: Center(
+    return Column(
+      children: [Text('Consumption Anomaly Graph'),
+      Center(
         child: _isLoading
             ? CircularProgressIndicator()
             : _graphData != null
@@ -69,7 +67,7 @@ class _GraphAnomalyWidgetState extends State<GraphAnomalyWidget> {
                     fit: BoxFit.contain,
                   )
                 : Text('Error loading graph'),
-      ),
+      ),],
     );
   }
 }

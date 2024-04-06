@@ -176,7 +176,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget deviceCards(screenWidth, screenHeight) {
+Widget deviceCards(screenWidth, screenHeight) {
     List<Map<String, dynamic>> devices = [
       {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
       {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
@@ -269,7 +269,37 @@ class _DashboardState extends State<Dashboard> {
                             ),
                           ],
                         ),
-                      )
+                      ),
+                      SizedBox(
+                        height: 60,
+                        width: screenWidth * 0.95,                        
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            color: Color.fromARGB(255, 255, 255, 255)
+                          ),
+                          child: PageView(
+                            children: const <Widget>[
+                              Center(
+                                  child: Text("In 2019, Singapore's total primary energy consumption was around 16 million tonnes of oil equivalent (Mtoe), which represented a 2.5% increase from 2018.", textAlign: TextAlign.center,)
+                              ),
+                              Center(
+                                  child: Text("The main sources of energy in Singapore's primary energy mix in 2019 were natural gas (95.2%) and others (4.8%), which included oil, coal, and renewable energy sources.", textAlign: TextAlign.center,)
+                              ),
+                              Center(
+                                  child: Text("Singapore has been actively pursuing renewable energy sources, particularly solar power, to diversify its energy mix. As of 2019, the country had around 350 megawatts (MW) of installed solar photovoltaic capacity.", textAlign: TextAlign.center,)
+                              ),
+                              Center(
+                                  child: Text("The building and transportation sectors are the largest energy consumers in Singapore, accounting for around 40% and 35% of total energy consumption respectively in 2019.", textAlign: TextAlign.center,)
+                              ),
+                              Center(
+                                  child: Text("Singapore has set a target to reduce its emissions intensity (emissions per unit of GDP) by 36% from 2005 levels by 2030, and to stabilize its greenhouse gas emissions.", textAlign: TextAlign.center,)
+                              ),
+                            ],
+                          ),
+                        ), 
+                      ),
                     ],
                   ),
                 ),
