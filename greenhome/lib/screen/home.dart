@@ -27,7 +27,7 @@ StatefulWidget home(BuildContext context) {
                   child: GestureDetector(
                     onTap: () {
                       // Navigate to the registration screen
-                      Navigator.of(context).pushNamed('/newUserReg');
+                      Navigator.of(context).pushNamed('/dashboard');
                     },
                     child: Container(
                       width: double.infinity,

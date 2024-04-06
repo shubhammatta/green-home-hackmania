@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:greenhome/screen/landing.dart';
-import 'package:greenhome/screen/registration.dart';
+import 'package:greenhome/screen/dashboard.dart';
 
 const String appName = 'Green Home';
 
