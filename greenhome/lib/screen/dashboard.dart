@@ -150,7 +150,7 @@ class _DashboardState extends State<Dashboard> {
                           maxLines: 2,
                         ),
                         Text(
-                          '$cost hours',
+                          '\$$cost',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
@@ -165,12 +165,12 @@ class _DashboardState extends State<Dashboard> {
 
   Widget deviceCards(screenWidth, screenHeight) {
     List<Map<String, dynamic>> devices = [
-      {'name': 'Aircon', 'status': true, 'hours': 8, 'kwh': 1},
-      {'name': 'Water Heater', 'status': true, 'hours': 1, 'kwh': 1},
-      {'name': 'Refrigerator', 'status': true, 'hours': 24, 'kwh': 0.03},
-      {'name': 'Washing machine', 'status': true, 'hours': 0.5, 'kwh': 1.5},
-      {'name': 'Computer', 'status': true, 'hours': 10, 'kwh': 0.5},
-      {'name': 'Lighting', 'status': true, 'hours': 6, 'kwh': 0.187},
+      {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
+      {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
+      {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
+      {'name': 'Washing machine', 'status': false, 'hours': 0.5, 'kwh': 1.5},
+      {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
+      {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
     ];
     List<String> deviceList = [
       'Aircon',
@@ -205,9 +205,11 @@ class _DashboardState extends State<Dashboard> {
           width: screenWidth / 2.5,
           isNew: devices[index]['status'],
           hrs: devices[index]['hours'],
-          cost: devices[index]['kwh'] *
-              devices[index]['hours'] *
-              Dashboard.ELECTRICITY_TARIFF,
+          cost: double.parse((devices[index]['kwh'] *
+                  devices[index]['hours'] *
+                  Dashboard.ELECTRICITY_TARIFF *
+                  0.01)
+              .toStringAsFixed(2)),
         );
       },
     );
