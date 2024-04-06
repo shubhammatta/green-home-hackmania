@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:greenhome/main.dart';
 import 'package:greenhome/screen/scan.dart';
 import 'package:greenhome/screen/selectHome.dart';
-import 'package:greenhome/widget/anomalyGraphWidget.dart';
 import 'package:greenhome/widget/appBar.dart';
 import 'package:greenhome/widget/graphWidget.dart';
 
@@ -14,6 +13,7 @@ const String startMsg =
 class Dashboard extends StatefulWidget {
   final String? homeType;
   final bool isNewUser;
+  static const double ELECTRICITY_TARIFF = 29.89;
   const Dashboard({super.key, this.homeType, required this.isNewUser});
 
   @override
@@ -92,7 +92,11 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget cardTemplate(
-      {required String title, double width = 200, isNew = false}) {
+      {required String title,
+      double width = 200,
+      isNew = false,
+      double hrs = 0.0,
+      double cost = 0.0}) {
     return Opacity(
       opacity: 0.85,
       child: Container(
@@ -140,8 +144,16 @@ class _DashboardState extends State<Dashboard> {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
-                        const Text('Value'),
-                        const Text('Conversion'),
+                        Text(
+                          '$hrs hours',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                        Text(
+                          '$cost hours',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
                       ],
               ),
             ),
@@ -153,12 +165,12 @@ class _DashboardState extends State<Dashboard> {
 
   Widget deviceCards(screenWidth, screenHeight) {
     List<Map<String, dynamic>> devices = [
-      {'name': 'Aircon', 'status': true, 'hours': 8},
-      {'name': 'Water Heater', 'status': true, 'hours': 1},
-      {'name': 'Refrigerator', 'status': true, 'hours': 24},
-      {'name': 'Washing machine', 'status': true, 'hours': 0.5},
-      {'name': 'Computer', 'status': true, 'hours': 10},
-      {'name': 'Lighting', 'status': true, 'hours': 6},
+      {'name': 'Aircon', 'status': true, 'hours': 8, 'kwh': 1},
+      {'name': 'Water Heater', 'status': true, 'hours': 1, 'kwh': 1},
+      {'name': 'Refrigerator', 'status': true, 'hours': 24, 'kwh': 0.03},
+      {'name': 'Washing machine', 'status': true, 'hours': 0.5, 'kwh': 1.5},
+      {'name': 'Computer', 'status': true, 'hours': 10, 'kwh': 0.5},
+      {'name': 'Lighting', 'status': true, 'hours': 6, 'kwh': 0.187},
     ];
     List<String> deviceList = [
       'Aircon',
@@ -192,6 +204,10 @@ class _DashboardState extends State<Dashboard> {
           title: devices[index]['name'],
           width: screenWidth / 2.5,
           isNew: devices[index]['status'],
+          hrs: devices[index]['hours'],
+          cost: devices[index]['kwh'] *
+              devices[index]['hours'] *
+              Dashboard.ELECTRICITY_TARIFF,
         );
       },
     );
@@ -241,9 +257,6 @@ class _DashboardState extends State<Dashboard> {
                             const Center(
                               child: GraphWidget(
                                   userId: 1234), // To Add Graph Widget
-                            ),
-                            const Center(
-                              child: GraphAnomalyWidget(userId: 1234), // To Add Graph Widget
                             ),
                           ],
                         ),
