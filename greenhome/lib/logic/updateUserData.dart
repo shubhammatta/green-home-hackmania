@@ -1,13 +1,22 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:greenhome/logic/getUserData.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> updateUserData(Map<String, dynamic> deviceData) async {
+  debugPrint('Updating user data');
   var currentUserData = {};
   await getUserData(1234).then((value) {
     currentUserData = value;
     print('Got - $currentUserData');
   });
+
+  double energyConsumption;
+  try {
+    energyConsumption = double.parse(deviceData['EnergyConsumption']);
+  } catch (e) {
+    energyConsumption = 0.1;
+  }
 
   var headers = {'Content-Type': 'application/json'};
   var request = http.Request(
@@ -15,16 +24,20 @@ Future<void> updateUserData(Map<String, dynamic> deviceData) async {
       Uri.parse(
           'https://python-hello-world-three-wine.vercel.app/api/add-device'));
   currentUserData['devices'].add({
-    'name': 'Projector',
+    // 'name': 'Projector',
+    'name': 'TV',
     'status': false,
-    'hours': 3.0,
-    'kwh': deviceData['EnergyConsumption'] / 12 / 30
+    'hours': 5.0,
+    'kwh': energyConsumption / 12 / 30
   });
 
-  double totalKwh = currentUserData['devices'].fold(0.0, (sum, device) {
-    return sum + (currentUserData['devices']['kwh'] ?? 0.0);
+  List<Map<String, dynamic>> devices = currentUserData['devices'];
+
+  double totalKwh = devices.fold(0.0, (sum, device) {
+    return sum + (device['kwh'] ?? 0.0);
   });
-  print('valueis   $totalKwh');
+
+  print('Total kWh: $totalKwh');
 
   request.body = json.encode({
     "user_id": 1234,
@@ -39,6 +52,8 @@ Future<void> updateUserData(Map<String, dynamic> deviceData) async {
   request.headers.addAll(headers);
 
   http.StreamedResponse response = await request.send();
+
+  debugPrint('Sent');
 
   if (response.statusCode == 200) {
     print(await response.stream.bytesToString());

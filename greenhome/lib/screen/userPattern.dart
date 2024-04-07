@@ -76,8 +76,8 @@ class _UserPatternState extends State<UserPattern> {
                     children: [
                       // container with round corners and left side will have icon and right side will have text. Color is primary theme color
                       GestureDetector(
-                        onTap: () {
-                          _updateData(widget.scanResult);
+                        onTap: () async {
+                          await _updateData(widget.scanResult);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
