@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:greenhome/screen/dashboard.dart';
 
 StatefulWidget home(BuildContext context) {
-  List<Map<String, dynamic>> devices = [
+  List<Map<String, dynamic>> userInfo = [
     {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
     {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
     {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
@@ -38,8 +38,7 @@ StatefulWidget home(BuildContext context) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Dashboard(
-                            devices: devices,
+                          builder: (context) => const Dashboard(
                             isNewUser: true,
                           ),
                         ),

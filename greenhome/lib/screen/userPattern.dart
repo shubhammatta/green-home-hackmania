@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:greenhome/logic/updateUserData.dart';
 import 'package:greenhome/screen/dashboard.dart';
 import 'package:greenhome/widget/appBar.dart';
 
-class UserPattern extends StatelessWidget {
+class UserPattern extends StatefulWidget {
   const UserPattern({super.key});
 
   @override
+  State<UserPattern> createState() => _UserPatternState();
+}
+
+Future<void> _updateData() async {
+  try {
+    var result = await updateUserData();
+    // Handle result
+  } catch (error) {
+    // Handle error
+  }
+}
+
+class _UserPatternState extends State<UserPattern> {
+  @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> devices = [
+    List<Map<String, dynamic>> userInfo = [
       {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
       {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
       {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
@@ -27,11 +43,22 @@ class UserPattern extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              const Text('Usage habits for: Projector'),
+              const Text('Usage habits for: Projector',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const Text(
-                  'Our service does not require a physical sensor. However, we need to know how much you use {Appliance Name} to give better recommendations.'),
+                'Our service does not require a physical sensor. However, we need to know how much you use the projector to give better information.',
+                style: TextStyle(fontSize: 15),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
               const Text(
-                  'How often do you use each {Appliance Name} in a day?'),
+                'How often do you use the projector in a day?',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               Column(
                 children: [
                   Row(
@@ -40,11 +67,12 @@ class UserPattern extends StatelessWidget {
                       // container with round corners and left side will have icon and right side will have text. Color is primary theme color
                       GestureDetector(
                         onTap: () {
+                          _updateData();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Dashboard(
-                                devices: devices,
+                              builder: (context) => const Dashboard(
+                                // userInfo: userInfo,
                                 isNewUser: false,
                               ),
                             ),
@@ -61,9 +89,10 @@ class UserPattern extends StatelessWidget {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Icon(
-                                Icons.light_mode,
-                                color: Colors.white,
+                              Image(
+                                image: AssetImage(
+                                    'asset/images/icon/use_rarely.png'),
+                                width: 70,
                               ),
                               Text(
                                 'Rarely',
@@ -84,9 +113,10 @@ class UserPattern extends StatelessWidget {
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Icon(
-                              Icons.light_mode,
-                              color: Colors.white,
+                            Image(
+                              image: AssetImage(
+                                  'asset/images/icon/use_frequently.png'),
+                              width: 70,
                             ),
                             Text(
                               'Frequently',
@@ -115,9 +145,10 @@ class UserPattern extends StatelessWidget {
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Icon(
-                              Icons.light_mode,
-                              color: Colors.white,
+                            Image(
+                              image: AssetImage(
+                                  'asset/images/icon/use_sometimes.png'),
+                              width: 70,
                             ),
                             Text(
                               'Sometimes',
@@ -137,9 +168,10 @@ class UserPattern extends StatelessWidget {
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Icon(
-                              Icons.light_mode,
-                              color: Colors.white,
+                            Image(
+                              image:
+                                  AssetImage('asset/images/icon/use_other.png'),
+                              width: 70,
                             ),
                             Text(
                               'Other',

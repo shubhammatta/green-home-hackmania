@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:greenhome/logic/getUserData.dart';
 import 'package:greenhome/main.dart';
 import 'package:greenhome/screen/scan.dart';
 import 'package:greenhome/screen/selectHome.dart';
@@ -15,13 +18,13 @@ const String startMsg =
 class Dashboard extends StatefulWidget {
   final String? homeType;
   final bool isNewUser;
-  final List<Map<String, dynamic>> devices;
+  final Map<String, dynamic> userInfo_;
   static const double ELECTRICITY_TARIFF = 29.89;
   const Dashboard(
       {super.key,
       this.homeType,
       required this.isNewUser,
-      this.devices = const []});
+      this.userInfo_ = const {}});
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -29,10 +32,13 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   bool showNewUserMsg = true;
+  bool isLoading = false;
+  Map<String, dynamic> userInfo = {};
 
   @override
   void initState() {
-    print(widget.devices);
+    fetchData();
+    userInfo = widget.userInfo_;
     showNewUserMsg = widget.isNewUser;
     debugPrint(widget.homeType.toString());
     widget.homeType != null ? showNewUserMsg = false : '';
@@ -42,6 +48,20 @@ class _DashboardState extends State<Dashboard> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      userInfo = await getUserData(1234);
+    } catch (error) {
+      print(error); // Handle the error
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Widget gettingStartedMsg() {
@@ -188,6 +208,59 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget liveCard(
+      {required String level, double kwh = 0.0, double cost = 0.0}) {
+    return Opacity(
+      opacity: 0.85,
+      child: Container(
+        height: 150,
+        width: 300,
+        decoration: ShapeDecoration(
+          color: const Color(0xFFFFFDFD),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Image(
+                  image: AssetImage('asset/images/icon/My Home.png'),
+                  width: 100,
+                )),
+            SizedBox(
+              width: 100,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // if text is large then line break
+                  Text(
+                    level,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                  Text(
+                    '$kwh kw/h',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                  Text(
+                    '\$$cost',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget deviceCards(screenWidth, screenHeight) {
     // List<Map<String, dynamic>> devices = [
     //   {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
@@ -197,12 +270,10 @@ class _DashboardState extends State<Dashboard> {
     //   {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
     //   {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
     // ];
-    List<Map<String, dynamic>> devices = widget.devices;
-    print(devices);
 
     return GridView.builder(
       padding: const EdgeInsets.all(10),
-      itemCount: devices.length + 1,
+      itemCount: userInfo['devices'].length + 1,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: screenWidth / (screenHeight / 4),
         crossAxisCount: 2, // Number of items in a row
@@ -210,9 +281,7 @@ class _DashboardState extends State<Dashboard> {
         mainAxisSpacing: 10, // Spacing between items vertically
       ),
       itemBuilder: (ctx, index) {
-        print("Total Number is :${devices.length}");
-        print("Index is :$index");
-        if (index == devices.length) {
+        if (index == userInfo['devices'].length) {
           return cardTemplate(
             title: 'Add Device',
             width: screenWidth / 2.5,
@@ -220,12 +289,14 @@ class _DashboardState extends State<Dashboard> {
           );
         }
         return cardTemplate(
-          title: devices[index]['name'],
+          title: userInfo['devices'][index]['name'],
           width: screenWidth / 2.5,
-          isNew: devices[index]['status'],
-          hrs: devices[index]['hours'],
-          cost: double.parse((devices[index]['kwh'] *
-                  devices[index]['hours'] *
+          isNew: userInfo['devices'][index]['status'],
+          hrs:
+              double.tryParse(userInfo['devices'][index]['hours'].toString()) ??
+                  0.0,
+          cost: double.parse((userInfo['devices'][index]['kwh'] *
+                  userInfo['devices'][index]['hours'] *
                   Dashboard.ELECTRICITY_TARIFF *
                   0.01)
               .toStringAsFixed(2)),
@@ -245,97 +316,104 @@ class _DashboardState extends State<Dashboard> {
           title: appName,
           isTransparent: true,
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('asset/images/HomeBackground.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: showNewUserMsg
-              ? gettingStartedMsg()
-              : Padding(
-                  padding:
-                      EdgeInsets.only(top: AppBar().preferredSize.height * 2),
-                  child: Column(
-                    children: [
-                      Center(
-                        child: cardTemplate(title: 'MyHome', width: 300),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      SizedBox(
-                        height: screenHeight / 2 + 30,
-                        child: PageView(
-                          children: <Widget>[
-                            SingleChildScrollView(
-                              child: SizedBox(
-                                height: screenHeight / 2 + 20,
-                                child: deviceCards(screenWidth, screenHeight),
+        body: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('asset/images/HomeBackground.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: showNewUserMsg
+                    ? gettingStartedMsg()
+                    : Padding(
+                        padding: EdgeInsets.only(
+                            top: AppBar().preferredSize.height * 2),
+                        child: Column(
+                          children: [
+                            Center(
+                              child: liveCard(
+                                  level: 'Green', kwh: 2.5, cost: 1.75),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            SizedBox(
+                              height: screenHeight / 2 + 30,
+                              child: PageView(
+                                children: <Widget>[
+                                  SingleChildScrollView(
+                                    child: SizedBox(
+                                      height: screenHeight / 2 + 20,
+                                      child: deviceCards(
+                                          screenWidth, screenHeight),
+                                    ),
+                                  ),
+                                  const Center(
+                                    child: GraphWidget(
+                                        userId: 1234), // To Add Graph Widget
+                                  ),
+                                  const Center(
+                                    child: GraphAnomalyWidget(
+                                        userId: 1234), // To Add Graph Widget
+                                  ),
+                                ],
                               ),
                             ),
-                            const Center(
-                              child: GraphWidget(
-                                  userId: 1234), // To Add Graph Widget
+                            const SizedBox(
+                              height: 5,
                             ),
-                            const Center(
-                              child: GraphAnomalyWidget(
-                                  userId: 1234), // To Add Graph Widget
+                            Opacity(
+                              opacity: 0.85,
+                              child: SizedBox(
+                                height: 60,
+                                width: screenWidth * 0.95,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255)),
+                                  child: PageView(
+                                    children: const <Widget>[
+                                      Center(
+                                          child: Text(
+                                        "In 2019, Singapore's total primary energy consumption was around 16 million tonnes of oil equivalent (Mtoe), which represented a 2.5% increase from 2018.",
+                                        textAlign: TextAlign.center,
+                                      )),
+                                      Center(
+                                          child: Text(
+                                        "The main sources of energy in Singapore's primary energy mix in 2019 were natural gas (95.2%) and others (4.8%), which included oil, coal, and renewable energy sources.",
+                                        textAlign: TextAlign.center,
+                                      )),
+                                      Center(
+                                          child: Text(
+                                        "Singapore has been actively pursuing renewable energy sources, particularly solar power, to diversify its energy mix. As of 2019, the country had around 350 megawatts (MW) of installed solar photovoltaic capacity.",
+                                        textAlign: TextAlign.center,
+                                      )),
+                                      Center(
+                                          child: Text(
+                                        "The building and transportation sectors are the largest energy consumers in Singapore, accounting for around 40% and 35% of total energy consumption respectively in 2019.",
+                                        textAlign: TextAlign.center,
+                                      )),
+                                      Center(
+                                          child: Text(
+                                        "Singapore has set a target to reduce its emissions intensity (emissions per unit of GDP) by 36% from 2005 levels by 2030, and to stabilize its greenhouse gas emissions.",
+                                        textAlign: TextAlign.center,
+                                      )),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Opacity(
-                        opacity: 0.85,
-                        child: SizedBox(
-                          height: 60,
-                          width: screenWidth * 0.95,
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                            child: PageView(
-                              children: const <Widget>[
-                                Center(
-                                    child: Text(
-                                  "In 2019, Singapore's total primary energy consumption was around 16 million tonnes of oil equivalent (Mtoe), which represented a 2.5% increase from 2018.",
-                                  textAlign: TextAlign.center,
-                                )),
-                                Center(
-                                    child: Text(
-                                  "The main sources of energy in Singapore's primary energy mix in 2019 were natural gas (95.2%) and others (4.8%), which included oil, coal, and renewable energy sources.",
-                                  textAlign: TextAlign.center,
-                                )),
-                                Center(
-                                    child: Text(
-                                  "Singapore has been actively pursuing renewable energy sources, particularly solar power, to diversify its energy mix. As of 2019, the country had around 350 megawatts (MW) of installed solar photovoltaic capacity.",
-                                  textAlign: TextAlign.center,
-                                )),
-                                Center(
-                                    child: Text(
-                                  "The building and transportation sectors are the largest energy consumers in Singapore, accounting for around 40% and 35% of total energy consumption respectively in 2019.",
-                                  textAlign: TextAlign.center,
-                                )),
-                                Center(
-                                    child: Text(
-                                  "Singapore has set a target to reduce its emissions intensity (emissions per unit of GDP) by 36% from 2005 levels by 2030, and to stabilize its greenhouse gas emissions.",
-                                  textAlign: TextAlign.center,
-                                )),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-        ),
+              ),
       ),
     );
   }
