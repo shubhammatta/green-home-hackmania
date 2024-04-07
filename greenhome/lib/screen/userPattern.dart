@@ -6,15 +6,16 @@ import 'package:greenhome/screen/dashboard.dart';
 import 'package:greenhome/widget/appBar.dart';
 
 class UserPattern extends StatefulWidget {
-  const UserPattern({super.key});
+  final Map<String, dynamic> scanResult;
+  const UserPattern({super.key, required this.scanResult});
 
   @override
   State<UserPattern> createState() => _UserPatternState();
 }
 
-Future<void> _updateData() async {
+Future<void> _updateData(scanResult) async {
   try {
-    var result = await updateUserData();
+    var result = await updateUserData(scanResult);
     // Handle result
   } catch (error) {
     // Handle error
@@ -24,15 +25,15 @@ Future<void> _updateData() async {
 class _UserPatternState extends State<UserPattern> {
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> userInfo = [
-      {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
-      {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
-      {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
-      {'name': 'Washing Machine', 'status': false, 'hours': 0.5, 'kwh': 1.5},
-      {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
-      {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
-      {'name': 'Projector', 'status': false, 'hours': 3.0, 'kwh': 0.83},
-    ];
+    // List<Map<String, dynamic>> userInfo = [
+    //   {'name': 'Aircon', 'status': false, 'hours': 8.0, 'kwh': 1.0},
+    //   {'name': 'Water Heater', 'status': false, 'hours': 1.0, 'kwh': 1.0},
+    //   {'name': 'Refrigerator', 'status': false, 'hours': 24.0, 'kwh': 0.03},
+    //   {'name': 'Washing Machine', 'status': false, 'hours': 0.5, 'kwh': 1.5},
+    //   {'name': 'Computer', 'status': false, 'hours': 10.0, 'kwh': 0.5},
+    //   {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
+    //   {'name': 'Projector', 'status': false, 'hours': 3.0, 'kwh': 0.83},
+    // ];
     double screenWidth = MediaQuery.of(context).size.width;
     return MaterialApp(
       home: Scaffold(
@@ -40,21 +41,30 @@ class _UserPatternState extends State<UserPattern> {
         appBar:
             const GreenHomeAppBar(title: 'Usage Detail', isTransparent: false),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              const Text('Usage habits for: Projector',
+              const Text('Projector',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const Text(
                 'Our service does not require a physical sensor. However, we need to know how much you use the projector to give better information.',
                 style: TextStyle(fontSize: 15),
+              ),
+              // add text that we found the approximated electricity usage of the projector
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                'We found that the approximated electricity usage of the ${widget.scanResult["Brand"]} - ${widget.scanResult["Model"]} projector is ${(widget.scanResult["EnergyConsumption"] / 12 / 30).toStringAsFixed(2)} kWh per hour.',
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 40,
               ),
               const Text(
                 'How often do you use the projector in a day?',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 20,
@@ -67,7 +77,7 @@ class _UserPatternState extends State<UserPattern> {
                       // container with round corners and left side will have icon and right side will have text. Color is primary theme color
                       GestureDetector(
                         onTap: () {
-                          _updateData();
+                          _updateData(widget.scanResult);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

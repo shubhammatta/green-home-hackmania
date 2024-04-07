@@ -12,6 +12,10 @@ StatefulWidget home(BuildContext context) {
     {'name': 'Lighting', 'status': false, 'hours': 6.0, 'kwh': 0.187},
   ];
   return MaterialApp(
+    // set theme color
+    theme: ThemeData(
+      primaryColor: const Color.fromARGB(255, 42, 191, 193),
+    ),
     home: Scaffold(
       body: SingleChildScrollView(
         child: Center(
@@ -44,24 +48,10 @@ StatefulWidget home(BuildContext context) {
                         ),
                       );
                     },
-                    child: Container(
+                    child: const Image(
+                      image: AssetImage('asset/images/mainWidget.png'),
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(7)),
-                      ),
-                      margin: const EdgeInsets.only(top: 20),
-                      child: const Center(
-                        child: Text(
-                          'Welcome to GreenHome',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                      fit: BoxFit.cover,
                     ),
                   )),
               const Image(

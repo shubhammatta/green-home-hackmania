@@ -8,6 +8,7 @@ import 'package:greenhome/logic/getUserData.dart';
 import 'package:greenhome/main.dart';
 import 'package:greenhome/screen/scan.dart';
 import 'package:greenhome/screen/selectHome.dart';
+import 'package:greenhome/screen/userPattern.dart';
 import 'package:greenhome/widget/anomalyGraphWidget.dart';
 import 'package:greenhome/widget/appBar.dart';
 import 'package:greenhome/widget/graphWidget.dart';
@@ -34,6 +35,7 @@ class _DashboardState extends State<Dashboard> {
   bool showNewUserMsg = true;
   bool isLoading = false;
   Map<String, dynamic> userInfo = {};
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -125,84 +127,121 @@ class _DashboardState extends State<Dashboard> {
       isNew = false,
       double hrs = 0.0,
       double cost = 0.0}) {
-    return Opacity(
-      opacity: 0.85,
-      child: Container(
-        height: 150,
-        width: width,
-        decoration: ShapeDecoration(
-          color: const Color(0xFFFFFDFD),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+    return GestureDetector(
+      onDoubleTap: () {
+        // show alert
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Recommend Replacement'),
+              content: const Text(
+                  'Your electronic device is consuming 15% more energy than your neighbors. Would you like to see some energy-efficient models?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {},
+                  child: const Text('See Models'),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text('Next Time'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Opacity(
+        opacity: 0.85,
+        child: Container(
+          height: 150,
+          width: width,
+          decoration: ShapeDecoration(
+            color: const Color(0xFFFFFDFD),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: title == 'MyHome'
-                  ? Image(
-                      image: const AssetImage('asset/images/icon/My Home.png'),
-                      width: width / 2.5,
-                    )
-                  : title == 'Add Device'
-                      ? //empty box
-                      const SizedBox(
-                          width: 1,
-                        )
-                      : SvgPicture.asset(
-                          'asset/images/icon/$title.svg',
-                          width: width / 2.5,
-                          height: width / 2.5,
-                          placeholderBuilder: (BuildContext context) =>
-                              const Icon(Icons.error),
-                        ),
-            ),
-            SizedBox(
-              width: width - (width / 2.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: isNew
-                    ? [
-                        Text(title),
-                        IconButton(
-                          onPressed: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ScanAppliance(),
-                              ),
-                            );
-                            print('Result from ScanPage: $result');
-                          },
-                          icon: const Icon(
-                            Icons.add_circle,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: title == 'MyHome'
+                    ? Image(
+                        image:
+                            const AssetImage('asset/images/icon/My Home.png'),
+                        width: width / 2.5,
+                      )
+                    : title == 'Add Device'
+                        ? //empty box
+                        const SizedBox(
+                            width: 1,
+                          )
+                        : SvgPicture.asset(
+                            'asset/images/icon/$title.svg',
+                            width: width / 2.5,
+                            height: width / 2.5,
+                            placeholderBuilder: (BuildContext context) =>
+                                const Icon(Icons.error),
                           ),
-                        )
-                      ]
-                    : [
-                        // if text is large then line break
-                        Text(
-                          title,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                        Text(
-                          '$hrs hours',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                        Text(
-                          '\$$cost',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ],
               ),
-            ),
-          ],
+              SizedBox(
+                width: width - (width / 2.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: isNew
+                      ? [
+                          Text(title),
+                          IconButton(
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ScanAppliance(),
+                                ),
+                              );
+                              // push to the userPattern screen with result variable
+                              if (mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UserPattern(
+                                      scanResult: result,
+                                    ),
+                                  ),
+                                );
+                              }
+                              print('Result from ScanPage: $result');
+                            },
+                            icon: const Icon(
+                              Icons.add_circle,
+                            ),
+                          )
+                        ]
+                      : [
+                          // if text is large then line break
+                          Text(
+                            title,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                          Text(
+                            '$hrs hours',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                          Text(
+                            '\$$cost',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                        ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -212,52 +251,75 @@ class _DashboardState extends State<Dashboard> {
       {required String level, double kwh = 0.0, double cost = 0.0}) {
     return Opacity(
       opacity: 0.85,
-      child: Container(
-        height: 150,
-        width: 300,
-        decoration: ShapeDecoration(
-          color: const Color(0xFFFFFDFD),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+      child: Stack(children: [
+        Container(
+          height: 150,
+          width: 300,
+          decoration: ShapeDecoration(
+            color: const Color(0xFFFFFDFD),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Image(
-                  image: AssetImage('asset/images/icon/My Home.png'),
-                  width: 100,
-                )),
-            SizedBox(
-              width: 100,
-              child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // if text is large then line break
-                  Text(
-                    level,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
+                  Padding(
+                    padding: EdgeInsets.all(0.0),
+                    child: Image(
+                      image: AssetImage('asset/images/icon/My Home.png'),
+                      width: 100,
+                    ),
                   ),
-                  Text(
-                    '$kwh kw/h',
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
-                  Text(
-                    '\$$cost',
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
+                  Text('Live Reading',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 42, 191, 193))),
                 ],
               ),
-            ),
-          ],
+              SizedBox(
+                width: 100,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$level level',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    Text(
+                      '$kwh kw/h',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    Text(
+                      '\$$cost',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: IconButton(
+              icon: const Icon(Icons.info),
+              onPressed: () {
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                );
+              }),
+        ),
+      ]),
     );
   }
 
@@ -310,6 +372,9 @@ class _DashboardState extends State<Dashboard> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
+      theme: ThemeData(
+        primaryColor: const Color.fromARGB(255, 42, 191, 193),
+      ),
       home: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: const GreenHomeAppBar(
@@ -317,8 +382,21 @@ class _DashboardState extends State<Dashboard> {
           isTransparent: true,
         ),
         body: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
+            ? Container(
+                width: screenWidth,
+                height: screenHeight,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('asset/images/HomeBackground.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: SizedBox(
+                  width: screenHeight / 2,
+                  height: screenHeight / 2,
+                  // make CircularProgressIndicator is centered and 100x100 in size
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
               )
             : Container(
                 decoration: const BoxDecoration(
@@ -344,6 +422,7 @@ class _DashboardState extends State<Dashboard> {
                             SizedBox(
                               height: screenHeight / 2 + 30,
                               child: PageView(
+                                controller: _pageController,
                                 children: <Widget>[
                                   SingleChildScrollView(
                                     child: SizedBox(

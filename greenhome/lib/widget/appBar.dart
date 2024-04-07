@@ -32,6 +32,13 @@ class GreenHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.white,
           fontSize: 30,
           fontWeight: FontWeight.bold,
+          shadows: [
+            Shadow(
+              blurRadius: 15.0,
+              color: Colors.black54,
+              offset: Offset(5.0, 5.0),
+            ),
+          ],
         ),
       ),
       backgroundColor:

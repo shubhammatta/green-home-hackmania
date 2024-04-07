@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -56,8 +57,9 @@ class _ScanApplianceState extends State<ScanAppliance> {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         var result = await response.stream.bytesToString();
+        var jsonResult = jsonDecode(result);
         if (mounted) {
-          Navigator.pop(context, result);
+          Navigator.pop(context, jsonResult);
         }
       } else {
         print(response.reasonPhrase);
@@ -101,8 +103,13 @@ class _ScanApplianceState extends State<ScanAppliance> {
                   ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const UserPattern()));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const UserPattern(
+                      scanResult: {},
+                    ),
+                  ),
+                );
               },
               child: const Text('Demo Only'),
             )

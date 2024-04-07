@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:greenhome/logic/getUserData.dart';
 import 'package:http/http.dart' as http;
 
-Future<void> updateUserData() async {
+Future<void> updateUserData(Map<String, dynamic> deviceData) async {
   var currentUserData = {};
   await getUserData(1234).then((value) {
     currentUserData = value;
@@ -14,8 +14,18 @@ Future<void> updateUserData() async {
       'POST',
       Uri.parse(
           'https://python-hello-world-three-wine.vercel.app/api/add-device'));
-  currentUserData['devices']
-      .add({'name': 'Projector', 'status': false, 'hours': 3.0, 'kwh': 0.83});
+  currentUserData['devices'].add({
+    'name': 'Projector',
+    'status': false,
+    'hours': 3.0,
+    'kwh': deviceData['EnergyConsumption'] / 12 / 30
+  });
+
+  double totalKwh = currentUserData['devices'].fold(0.0, (sum, device) {
+    return sum + (currentUserData['devices']['kwh'] ?? 0.0);
+  });
+  print('valueis   $totalKwh');
+
   request.body = json.encode({
     "user_id": 1234,
     "layout": "1-Bedroom",
